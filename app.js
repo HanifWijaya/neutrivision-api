@@ -16,6 +16,7 @@ app.post('/api/register', async (req, res) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) return res.status(400).json({ error: error.message });
   
+    // Jika berhasil, simpan nama lengkap ke tabel Profiles
     if (data.user) {
       const { error: profileError } = await supabase
         .from('profiles')
@@ -30,9 +31,10 @@ app.post('/api/login', async (req, res) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return res.status(401).json({ error: "Email atau Password Salah" });
   
+    // Kirim Token ke Android untuk disimpan di Shared Preferences
     res.json({
       message: "Login Berhasil",
-      token: data.session.access_token, 
+      token: data.session.access_token, // Ini kunci untuk akses fitur lainnya
       user: data.user
     });
 });
